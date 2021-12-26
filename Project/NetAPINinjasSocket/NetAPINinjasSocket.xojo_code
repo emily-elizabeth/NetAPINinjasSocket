@@ -5,15 +5,23 @@ Inherits URLConnection
 		Sub ContentReceived(URL As String, HTTPStatus As Integer, content As String)
 		  DIM json As JSONItem = NEW JSONItem(content)
 		  
-		  select case URL
-		  case FactsURL
+		  
+		  if (URL.IndexOf(me.FactsURL) > -1) then
 		    DIM result() As String
 		    for i As Integer = 0 to (json.Count() - 1)
 		      DIM jsonValue As JSONItem = json.Value(i)
 		      result.Append jsonValue.Value("fact")
 		      RaiseEvent FactsReceived result
 		    next i
-		  end select
+		    
+		  elseif (URL.IndexOf(me.JokesURL) > -1) then
+		    DIM result() As String
+		    for i As Integer = 0 to (json.Count() - 1)
+		      DIM jsonValue As JSONItem = json.Value(i)
+		      result.Append jsonValue.Value("joke")
+		      RaiseEvent JokesReceived result
+		    next i
+		  end if
 		End Sub
 	#tag EndEvent
 
@@ -25,15 +33,26 @@ Inherits URLConnection
 
 
 	#tag Method, Flags = &h0
-		Sub Facts()
+		Sub Facts(limit As Integer = 1)
 		  me.RequestHeader("X-Api-Key") = me.APIKey
-		  me.Send "GET", me.FactsURL
+		  me.Send "GET", me.FactsURL + "?limit=" + limit.ToString
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Jokes(limit As Integer = 1)
+		  me.RequestHeader("X-Api-Key") = me.APIKey
+		  me.Send "GET", me.JokesURL + "?limit=" + limit.ToString
 		End Sub
 	#tag EndMethod
 
 
 	#tag Hook, Flags = &h0
 		Event FactsReceived(facts() As String)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event JokesReceived(jokes() As String)
 	#tag EndHook
 
 
@@ -43,6 +62,9 @@ Inherits URLConnection
 
 
 	#tag Constant, Name = FactsURL, Type = String, Dynamic = False, Default = \"https://api.api-ninjas.com/v1/facts", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = JokesURL, Type = String, Dynamic = False, Default = \"https://api.api-ninjas.com/v1/jokes", Scope = Private
 	#tag EndConstant
 
 

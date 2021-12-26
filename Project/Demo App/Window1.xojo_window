@@ -50,7 +50,7 @@ Begin DesktopWindow Window1
       MaximumCharactersAllowed=   0
       Password        =   False
       ReadOnly        =   False
-      Scope           =   0
+      Scope           =   2
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
@@ -85,7 +85,7 @@ Begin DesktopWindow Window1
       LockRight       =   True
       LockTop         =   True
       MacButtonStyle  =   0
-      Scope           =   0
+      Scope           =   2
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
@@ -109,7 +109,7 @@ Begin DesktopWindow Window1
       LockTop         =   True
       PanelCount      =   2
       Panels          =   ""
-      Scope           =   0
+      Scope           =   2
       SelectedPanelIndex=   0
       TabIndex        =   2
       TabPanelIndex   =   0
@@ -141,7 +141,7 @@ Begin DesktopWindow Window1
          LockRight       =   False
          LockTop         =   True
          MacButtonStyle  =   0
-         Scope           =   0
+         Scope           =   2
          TabIndex        =   0
          TabPanelIndex   =   1
          TabStop         =   True
@@ -200,6 +200,98 @@ Begin DesktopWindow Window1
          Visible         =   True
          Width           =   560
       End
+      Begin DesktopPopupMenu FactsLimit
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "PagePanel1"
+         InitialValue    =   "1\n2\n3\n4\n5\n10\n15\n20\n25\n30"
+         Italic          =   False
+         Left            =   242
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   2
+         SelectedRowIndex=   0
+         TabIndex        =   2
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   76
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   80
+      End
+      Begin DesktopButton Jokes
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Cancel          =   False
+         Caption         =   "Jokes"
+         Default         =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "PagePanel1"
+         Italic          =   False
+         Left            =   20
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         MacButtonStyle  =   0
+         Scope           =   2
+         TabIndex        =   3
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   106
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   210
+      End
+      Begin DesktopPopupMenu JokesLimit
+         AllowAutoDeactivate=   True
+         Bold            =   False
+         Enabled         =   True
+         FontName        =   "System"
+         FontSize        =   0.0
+         FontUnit        =   0
+         Height          =   20
+         Index           =   -2147483648
+         InitialParent   =   "PagePanel1"
+         InitialValue    =   "1\n2\n3\n4\n5\n10\n15\n20\n25\n30"
+         Italic          =   False
+         Left            =   242
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   2
+         SelectedRowIndex=   0
+         TabIndex        =   4
+         TabPanelIndex   =   1
+         TabStop         =   True
+         Tooltip         =   ""
+         Top             =   108
+         Transparent     =   False
+         Underline       =   False
+         Visible         =   True
+         Width           =   80
+      End
    End
    Begin NetAPINinjasSocket NetAPINinjasSocket1
       AllowCertificateValidation=   False
@@ -207,7 +299,7 @@ Begin DesktopWindow Window1
       HTTPStatusCode  =   0
       Index           =   -2147483648
       LockedInPosition=   False
-      Scope           =   0
+      Scope           =   2
       TabPanelIndex   =   0
    End
 End
@@ -229,7 +321,14 @@ End
 #tag Events Facts
 	#tag Event
 		Sub Pressed()
-		  self.NetAPINinjasSocket1.Facts
+		  self.NetAPINinjasSocket1.Facts self.FactsLimit.SelectedRowValue.ToInteger
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events Jokes
+	#tag Event
+		Sub Pressed()
+		  self.NetAPINinjasSocket1.Jokes self.JokesLimit.SelectedRowValue.ToInteger
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -240,6 +339,15 @@ End
 		  
 		  for i As Integer = 0 to (facts.Count - 1)
 		    self.Results.AddText i.ToString + " " + facts(i) + EndOfLine
+		  next i
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub JokesReceived(jokes() As String)
+		  self.Results.Text = ""
+		  
+		  for i As Integer = 0 to (jokes.Count - 1)
+		    self.Results.AddText i.ToString + " " + jokes(i) + EndOfLine
 		  next i
 		End Sub
 	#tag EndEvent
